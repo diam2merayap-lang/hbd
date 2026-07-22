@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday ❤️</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#ffe8ec;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+.container{
+    width:100%;
+    max-width:700px;
+    text-align:center;
+}
+
+/* ---------------- Envelope ---------------- */
+
+#envelopePage{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+.envelope{
+    position:relative;
+    width:280px;
+    height:180px;
+    cursor:pointer;
+}
+
+.body{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:#f6b2b2;
+    border-radius:8px;
+}
+
+.flap{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:#ef8f8f;
+    clip-path:polygon(0 0,50% 60%,100% 0);
+    transform-origin:top;
+    transition:.8s;
+}
+
+.open .flap{
+    transform:rotateX(180deg);
+}
+
+.note{
+    margin-top:30px;
+    color:#444;
+    font-size:18px;
+}
+
+/* ---------------- Slider ---------------- */
+
+#sliderPage{
+    display:none;
+    animation:fade .8s;
+}
+
+.slide img{
+    width:100%;
+    max-width:500px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+
+.slide p{
+    margin-top:20px;
+    font-size:22px;
+    color:#444;
+    padding:0 20px;
+}
+
+.fade{
+    animation:fade .8s;
+}
+
+/* ---------------- Final ---------------- */
+
+#finalPage{
+    display:none;
+    animation:fade 1s;
+}
+
+#finalPage img{
+    width:100%;
+    max-width:500px;
+    border-radius:20px;
+}
+
+#finalPage h1{
+    margin-top:25px;
+    color:#d94b73;
+}
+
+#finalPage p{
+    margin-top:15px;
+    color:#555;
+    font-size:20px;
+    line-height:1.6;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Envelope -->
+<div id="envelopePage">
+
+<div class="envelope" id="envelope">
+
+<div class="body"></div>
+<div class="flap"></div>
+
+</div>
+
+<div class="note">
+💌 Click the envelope
+</div>
+
+</div>
+
+<!-- Slider -->
+<div id="sliderPage">
+
+<div class="slide fade">
+
+<img id="slideImage" src="img1.png">
+
+<p id="slideText"></p>
+
+</div>
+
+</div>
+
+<!-- Final -->
+<div id="finalPage">
+
+<img src="final.png">
+
+<h1>Happy Birthday! 🎂</h1>
+
+<p>
+Thank you for being an amazing person.<br>
+I hope this year brings you happiness, laughter,<br>
+and all the wonderful things you deserve. ❤️
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+const slides = [
+{
+image:"img1.png",
+text:"I hope today is filled with lots of smiles 😊"
+},
+{
+image:"img2.png",
+text:"Thank you for all the memories we've shared 💕"
+},
+{
+image:"img3.png",
+text:"May all your dreams come true this year 🌸"
+}
+];
+
+let current=0;
+
+const envelope=document.getElementById("envelope");
+const envelopePage=document.getElementById("envelopePage");
+const sliderPage=document.getElementById("sliderPage");
+const finalPage=document.getElementById("finalPage");
+
+const slideImage=document.getElementById("slideImage");
+const slideText=document.getElementById("slideText");
+
+function showSlide(){
+
+slideImage.src=slides[current].image;
+slideText.innerHTML=slides[current].text;
+
+current++;
+
+if(current<slides.length){
+
+setTimeout(showSlide,3000);
+
+}else{
+
+setTimeout(()=>{
+
+sliderPage.style.display="none";
+finalPage.style.display="block";
+
+},3000);
+
+}
+
+}
+
+envelope.onclick=()=>{
+
+envelope.classList.add("open");
+
+setTimeout(()=>{
+
+envelopePage.style.display="none";
+sliderPage.style.display="block";
+
+current=0;
+
+showSlide();
+
+},900);
+
+}
+
+showSlide = showSlide.bind(this);
+
+</script>
+
+</body>
+</html>
