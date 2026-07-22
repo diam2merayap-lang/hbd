@@ -41,8 +41,12 @@ body{
     position:relative;
     width:280px;
     height:180px;
-    cursor:pointer;
     perspective:800px;
+    transition:.3s;
+}
+
+.envelope.loaded{
+    cursor:pointer;
 }
 
 .body{
@@ -71,6 +75,17 @@ body{
     margin-top:25px;
     font-size:18px;
     color:#555;
+}
+
+.disabled{
+    opacity:.5;
+    pointer-events:none;
+    cursor:not-allowed;
+}
+
+.loaded{
+    opacity:1;
+    pointer-events:auto;
 }
 
 /* ---------- Slider ---------- */
@@ -158,12 +173,12 @@ button:disabled{
 
 @keyframes fade{
 from{
-opacity:0;
-transform:translateY(10px);
+    opacity:0;
+    transform:translateY(10px);
 }
 to{
-opacity:1;
-transform:translateY(0);
+    opacity:1;
+    transform:translateY(0);
 }
 }
 </style>
@@ -177,13 +192,13 @@ transform:translateY(0);
 
 <div id="envelopePage">
 
-<div class="envelope" id="envelope">
-<div class="body"></div>
-<div class="flap"></div>
+<div class="envelope disabled" id="envelope">
+    <div class="body"></div>
+    <div class="flap"></div>
 </div>
 
-<div class="note">
-💌 Click the envelope
+<div class="note" id="loadingText">
+⏳ Loading images... (0/4)
 </div>
 
 </div>
@@ -248,7 +263,16 @@ text:"May every wish you make today come true. Happy Birthday! 🎉"
 }
 ];
 
+const imageFiles=[
+"img1.png",
+"img2.png",
+"img3.png",
+"final.png"
+];
+
 let current=0;
+let loaded=0;
+let failed=0;
 
 const envelope=document.getElementById("envelope");
 const envelopePage=document.getElementById("envelopePage");
@@ -261,66 +285,119 @@ const counter=document.getElementById("counter");
 
 const prevBtn=document.getElementById("prevBtn");
 const nextBtn=document.getElementById("nextBtn");
+const loadingText=document.getElementById("loadingText");
+
+function preloadImages(){
+
+    imageFiles.forEach(src=>{
+
+        const img=new Image();
+
+        img.onload=imageLoaded;
+        img.onerror=imageFailed;
+
+        img.src=src;
+
+    });
+
+}
+
+function imageLoaded(){
+
+    loaded++;
+    checkFinished();
+
+}
+
+function imageFailed(){
+
+    failed++;
+    checkFinished();
+
+}
+
+function checkFinished(){
+
+    loadingText.innerHTML=`⏳ Loading images... (${loaded+failed}/${imageFiles.length})`;
+
+    if((loaded+failed)!==imageFiles.length)
+        return;
+
+    if(failed>0){
+
+        loadingText.innerHTML=`❌ Failed to load ${failed} image(s).`;
+        return;
+
+    }
+
+    envelope.classList.remove("disabled");
+    envelope.classList.add("loaded");
+
+    loadingText.innerHTML="💌 Click the envelope";
+
+}
 
 function updateSlide(){
 
-slideImage.src=slides[current].image;
-slideText.innerHTML=slides[current].text;
-counter.innerHTML=`Memory ${current+1} / ${slides.length}`;
+    slideImage.src=slides[current].image;
+    slideText.innerHTML=slides[current].text;
+    counter.innerHTML=`Memory ${current+1} / ${slides.length}`;
 
-prevBtn.disabled=current===0;
+    prevBtn.disabled=current===0;
 
-if(current===slides.length-1){
-nextBtn.innerHTML="Finish ❤️";
-}else{
-nextBtn.innerHTML="Next →";
-}
+    if(current===slides.length-1){
+        nextBtn.innerHTML="Finish ❤️";
+    }else{
+        nextBtn.innerHTML="Next →";
+    }
 
-document.querySelector(".slide").classList.remove("fade");
-void document.querySelector(".slide").offsetWidth;
-document.querySelector(".slide").classList.add("fade");
+    document.querySelector(".slide").classList.remove("fade");
+    void document.querySelector(".slide").offsetWidth;
+    document.querySelector(".slide").classList.add("fade");
 
 }
 
 prevBtn.onclick=function(){
 
-if(current>0){
-current--;
-updateSlide();
-}
+    if(current>0){
+        current--;
+        updateSlide();
+    }
 
 }
 
 nextBtn.onclick=function(){
 
-if(current<slides.length-1){
+    if(current<slides.length-1){
 
-current++;
-updateSlide();
+        current++;
+        updateSlide();
 
-}else{
+    }else{
 
-sliderPage.style.display="none";
-finalPage.style.display="block";
+        sliderPage.style.display="none";
+        finalPage.style.display="block";
 
-}
+    }
 
 }
 
 envelope.onclick=function(){
 
-envelope.classList.add("open");
+    envelope.classList.add("open");
 
-setTimeout(()=>{
+    setTimeout(()=>{
 
-envelopePage.style.display="none";
-sliderPage.style.display="block";
+        envelopePage.style.display="none";
+        sliderPage.style.display="block";
 
-updateSlide();
+        updateSlide();
 
-},800);
+    },800);
 
 }
+
+preloadImages();
 
 </script>
 
