@@ -26,15 +26,15 @@ body{
     width:100%;
     max-width:700px;
     text-align:center;
+    padding:20px;
 }
 
-/* ---------------- Envelope ---------------- */
+/* ---------- Envelope ---------- */
 
 #envelopePage{
     display:flex;
-    justify-content:center;
-    align-items:center;
     flex-direction:column;
+    align-items:center;
 }
 
 .envelope{
@@ -42,6 +42,7 @@ body{
     width:280px;
     height:180px;
     cursor:pointer;
+    perspective:800px;
 }
 
 .body{
@@ -49,7 +50,7 @@ body{
     width:100%;
     height:100%;
     background:#f6b2b2;
-    border-radius:8px;
+    border-radius:10px;
 }
 
 .flap{
@@ -67,65 +68,98 @@ body{
 }
 
 .note{
-    margin-top:30px;
-    color:#444;
+    margin-top:25px;
     font-size:18px;
+    color:#555;
 }
 
-/* ---------------- Slider ---------------- */
+/* ---------- Slider ---------- */
 
 #sliderPage{
     display:none;
-    animation:fade .8s;
 }
 
 .slide img{
     width:100%;
     max-width:500px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.2);
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
+}
+
+.counter{
+    margin-bottom:15px;
+    color:#d35d7f;
+    font-weight:bold;
 }
 
 .slide p{
     margin-top:20px;
     font-size:22px;
     color:#444;
-    padding:0 20px;
+    min-height:70px;
+    line-height:1.5;
 }
 
-.fade{
-    animation:fade .8s;
+.buttons{
+    margin-top:30px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
 }
 
-/* ---------------- Final ---------------- */
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:50px;
+    background:#ff7a9c;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+/* ---------- Final ---------- */
 
 #finalPage{
     display:none;
-    animation:fade 1s;
 }
 
 #finalPage img{
     width:100%;
     max-width:500px;
     border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
 }
 
 #finalPage h1{
     margin-top:25px;
-    color:#d94b73;
+    color:#d24b73;
 }
 
 #finalPage p{
     margin-top:15px;
-    color:#555;
     font-size:20px;
-    line-height:1.6;
+    color:#555;
+    line-height:1.7;
+}
+
+.fade{
+    animation:fade .4s;
 }
 
 @keyframes fade{
 from{
 opacity:0;
-transform:translateY(20px);
+transform:translateY(10px);
 }
 to{
 opacity:1;
@@ -133,19 +167,19 @@ transform:translateY(0);
 }
 }
 </style>
+
 </head>
 <body>
 
 <div class="container">
 
 <!-- Envelope -->
+
 <div id="envelopePage">
 
 <div class="envelope" id="envelope">
-
 <div class="body"></div>
 <div class="flap"></div>
-
 </div>
 
 <div class="note">
@@ -155,19 +189,28 @@ transform:translateY(0);
 </div>
 
 <!-- Slider -->
+
 <div id="sliderPage">
+
+<div class="counter" id="counter"></div>
 
 <div class="slide fade">
 
-<img id="slideImage" src="img1.png">
+<img id="slideImage" src="">
 
 <p id="slideText"></p>
+
+<div class="buttons">
+<button id="prevBtn">← Previous</button>
+<button id="nextBtn">Next →</button>
+</div>
 
 </div>
 
 </div>
 
 <!-- Final -->
+
 <div id="finalPage">
 
 <img src="final.png">
@@ -175,9 +218,13 @@ transform:translateY(0);
 <h1>Happy Birthday! 🎂</h1>
 
 <p>
-Thank you for being an amazing person.<br>
-I hope this year brings you happiness, laughter,<br>
-and all the wonderful things you deserve. ❤️
+Thank you for everything.<br><br>
+
+I hope this birthday brings lots of happiness,
+good health, wonderful memories,
+and countless reasons to smile.
+
+Have an amazing year ahead! ❤️
 </p>
 
 </div>
@@ -186,18 +233,18 @@ and all the wonderful things you deserve. ❤️
 
 <script>
 
-const slides = [
+const slides=[
 {
 image:"img1.png",
-text:"I hope today is filled with lots of smiles 😊"
+text:"I hope today is filled with happiness and laughter. 😊"
 },
 {
 image:"img2.png",
-text:"Thank you for all the memories we've shared 💕"
+text:"Thank you for all the wonderful memories we've shared together. 💕"
 },
 {
 image:"img3.png",
-text:"May all your dreams come true this year 🌸"
+text:"May every wish you make today come true. Happy Birthday! 🎉"
 }
 ];
 
@@ -210,32 +257,57 @@ const finalPage=document.getElementById("finalPage");
 
 const slideImage=document.getElementById("slideImage");
 const slideText=document.getElementById("slideText");
+const counter=document.getElementById("counter");
 
-function showSlide(){
+const prevBtn=document.getElementById("prevBtn");
+const nextBtn=document.getElementById("nextBtn");
+
+function updateSlide(){
 
 slideImage.src=slides[current].image;
 slideText.innerHTML=slides[current].text;
+counter.innerHTML=`Memory ${current+1} / ${slides.length}`;
+
+prevBtn.disabled=current===0;
+
+if(current===slides.length-1){
+nextBtn.innerHTML="Finish ❤️";
+}else{
+nextBtn.innerHTML="Next →";
+}
+
+document.querySelector(".slide").classList.remove("fade");
+void document.querySelector(".slide").offsetWidth;
+document.querySelector(".slide").classList.add("fade");
+
+}
+
+prevBtn.onclick=function(){
+
+if(current>0){
+current--;
+updateSlide();
+}
+
+}
+
+nextBtn.onclick=function(){
+
+if(current<slides.length-1){
 
 current++;
-
-if(current<slides.length){
-
-setTimeout(showSlide,3000);
+updateSlide();
 
 }else{
-
-setTimeout(()=>{
 
 sliderPage.style.display="none";
 finalPage.style.display="block";
 
-},3000);
-
 }
 
 }
 
-envelope.onclick=()=>{
+envelope.onclick=function(){
 
 envelope.classList.add("open");
 
@@ -244,15 +316,11 @@ setTimeout(()=>{
 envelopePage.style.display="none";
 sliderPage.style.display="block";
 
-current=0;
+updateSlide();
 
-showSlide();
-
-},900);
+},800);
 
 }
-
-showSlide = showSlide.bind(this);
 
 </script>
 
