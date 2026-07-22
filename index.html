@@ -144,10 +144,6 @@ button:disabled{
 
 /* ---------- Final ---------- */
 
-#finalPage{
-    display:none;
-}
-
 #finalPage img{
     width:100%;
     max-width:500px;
@@ -318,7 +314,7 @@ Have an amazing year ahead! ❤️
 </div>
 
 </div>
-
+<div class="flash" id="flash"></div>
 <script>
 
 const slides=[
@@ -450,6 +446,8 @@ nextBtn.onclick=function(){
     }else{
 
         flash.classList.add("show");
+        void flash.offsetWidth;   // restart animation
+flash.classList.add("show");
 
 setTimeout(()=>{
 
@@ -459,6 +457,7 @@ setTimeout(()=>{
 
     requestAnimationFrame(()=>{
         finalPage.classList.add("show");
+        flash.classList.remove("show");
     });
 
 },350);
@@ -485,6 +484,6 @@ envelope.onclick=function(){
 preloadImages();
 
 </script>
-<div class="flash" id="flash"></div>
+
 </body>
 </html>
