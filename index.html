@@ -250,6 +250,42 @@ to{
     30%{opacity:.95;}
     100%{opacity:0;}
 }
+    /* ---------- Confetti ---------- */
+
+#confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:9999;
+}
+
+.confetti-piece{
+    position:absolute;
+    width:10px;
+    height:18px;
+    top:-20px;
+    border-radius:2px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+
+    from{
+        transform:
+            translateY(-20px)
+            rotate(0deg);
+        opacity:1;
+    }
+
+    to{
+        transform:
+            translateY(110vh)
+            rotate(720deg);
+        opacity:0.9;
+    }
+
+}
 </style>
 
 </head>
@@ -315,6 +351,7 @@ Have an amazing year ahead! ❤️
 
 </div>
 <div class="flash" id="flash"></div>
+<div id="confetti"></div>
 <script>
 
 const slides=[
@@ -356,6 +393,7 @@ const prevBtn=document.getElementById("prevBtn");
 const nextBtn=document.getElementById("nextBtn");
 const loadingText=document.getElementById("loadingText");
 const flash=document.getElementById("flash");
+const confetti = document.getElementById("confetti");
 
 function preloadImages(){
 
@@ -453,12 +491,13 @@ setTimeout(()=>{
 
     sliderPage.style.display="none";
 
-    finalPage.style.display="block";
+finalPage.style.display="block";
 
-    requestAnimationFrame(()=>{
-        finalPage.classList.add("show");
-        flash.classList.remove("show");
-    });
+requestAnimationFrame(()=>{
+    finalPage.classList.add("show");
+});
+
+launchConfetti();
 
 },350);
 
@@ -482,7 +521,54 @@ envelope.onclick=function(){
 }
 
 preloadImages();
+    
+function launchConfetti(){
 
+    const colors=[
+        "#ff4d6d",
+        "#ffbe0b",
+        "#3a86ff",
+        "#8338ec",
+        "#06d6a0",
+        "#fb5607",
+        "#ffffff"
+    ];
+
+    for(let i=0;i<180;i++){
+
+        const piece=document.createElement("div");
+
+        piece.className="confetti-piece";
+
+        piece.style.left=Math.random()*100+"vw";
+
+        piece.style.background=
+            colors[Math.floor(Math.random()*colors.length)];
+
+        piece.style.animationDuration=
+            (3+Math.random()*3)+"s";
+
+        piece.style.animationDelay=
+            (Math.random()*0.5)+"s";
+
+        piece.style.transform=
+            `rotate(${Math.random()*360}deg)`;
+
+        piece.style.width=
+            (6+Math.random()*8)+"px";
+
+        piece.style.height=
+            (10+Math.random()*12)+"px";
+
+        confetti.appendChild(piece);
+
+    }
+
+    setTimeout(()=>{
+        confetti.innerHTML="";
+    },7000);
+
+}
 </script>
 
 </body>
